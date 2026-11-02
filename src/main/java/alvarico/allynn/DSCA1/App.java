@@ -1,13 +1,18 @@
 package alvarico.allynn.DSCA1;
 
-/**
- * Hello world!
- *
- */
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("collegePU");
+
+        try {
+            System.out.println("Persistence setup started successfully.");
+        } finally {
+            emf.close();
+        }
     }
 }
