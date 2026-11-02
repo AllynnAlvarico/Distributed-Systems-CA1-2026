@@ -30,6 +30,10 @@ public class Payment {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
+	
+	public int getId() {
+		return this.id;
+	}
 
 	public String getDate() {
 		return date;
