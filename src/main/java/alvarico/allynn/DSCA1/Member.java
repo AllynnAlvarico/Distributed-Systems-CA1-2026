@@ -1,7 +1,18 @@
 package alvarico.allynn.DSCA1;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Member {
-	
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
 	private String membershipId;
@@ -16,26 +27,25 @@ public class Member {
 	
 	private MembershipPlan mp;
 	
-	private Payment payment;
+	private List<Payment> payments = new ArrayList<>();
 	
 	public Member() {}
 
-	public Member(String membershipId, String name, String phoneNumber, String address, FitnessGoal fg, MembershipPlan mp, Payment payment) {
+	public Member(String membershipId, String name, String phoneNumber, String address, FitnessGoal fg, MembershipPlan mp) {
 		this.membershipId = membershipId;
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.address = address;
 		this.fg = fg;
 		this.mp = mp;
-		this.payment = payment;
 	}
 	
 	public void setMembershipId(String membershipId) {
 		this.membershipId = membershipId;
 	}
 	
-	public void setName(String name, String surname) {
-		this.name = name + " " + surname;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public void setPhoneNumber(String phoneNumber) {
@@ -54,8 +64,12 @@ public class Member {
 		this.mp = mp;
 	}
 	
-	public void setPayment(Payment payment) {
-		this.payment = payment;
+	public void addPayment(Payment payment) {
+		this.payments.add(payment);
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 
 	public String getMembershipId() {
@@ -78,8 +92,11 @@ public class Member {
 		return this.fg;
 	}
 
-	public MembershipPlan getMp() {
+	public MembershipPlan getMembershipPlan() {
 		return this.mp;
 	}
 	
+	public List<Payment> getPayments(){
+		return this.payments;
+	}
 }
