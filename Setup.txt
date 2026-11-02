@@ -1,0 +1,332 @@
+COMMUNITY FITNESS CENTER — ECLIPSE PROJECT SETUP NOTES
+
+PURPOSE
+Recreate the development setup on a college PC.
+These instructions stop before creating web.xml.
+
+SETUP USED
+- Eclipse with Java and server tools
+- A suitable Java JDK: JDK 23 was available on the home PC
+- Project compilation target: Java 17
+- Apache Tomcat 10.1
+- Jersey 3.1.11
+- Hibernate 6.6.59.Final
+- Maven WAR project
+
+IMPORTANT
+Check what is already installed on the college PC.
+Do not reinstall tools that are already available.
+The college PC may use a different Eclipse release.
+
+
+1. SELECT THE JAVA JDK
+
+Open:
+Window → Preferences → Java → Installed JREs
+
+- Look for an installed JDK.
+- Tick the checkbox beside the JDK you will use.
+- Click Apply and Close.
+
+On the home PC, the selected JDK was:
+C:\Program Files\Java\jdk-23
+
+The college PC may have a different location or JDK version.
+
+Selecting the workspace JDK does not automatically fix every existing
+project's Java settings. We also configure the project through pom.xml.
+
+
+2. CHECK FOR ECLIPSE SERVER TOOLS
+
+Open:
+Window → Preferences
+
+Look for:
+Server → Runtime Environments
+
+If Server is available, skip Step 3.
+
+
+3. INSTALL SERVER TOOLS IF SERVER IS MISSING
+
+Open:
+Help → Install New Software…
+
+In "Work with":
+- Select the update site matching your Eclipse release.
+- The home PC used Eclipse 4.33 and the 2024-09 update site.
+- Do not automatically use 2024-09 if the college Eclipse version differs.
+
+Wait for the software list to load.
+
+In the filter box, type:
+JST
+
+Select:
+- JST Server Adapters
+- JST Server Adapters Extensions (Apache Tomcat)
+- JST Server UI
+
+Then:
+- Click Next.
+- Review the installation.
+- Continue to the licence page.
+- Accept the licence terms if you agree.
+- Click Finish.
+- Restart Eclipse when prompted.
+
+After restarting, check:
+Window → Preferences → Server → Runtime Environments
+
+If installation fails, record the exact error message.
+
+
+4. DOWNLOAD AND EXTRACT TOMCAT 10.1
+
+Skip the download if Tomcat 10.1 is already installed.
+
+Otherwise:
+- Open the official Apache Tomcat website.
+- Go to the Tomcat 10.1 download page.
+- Find Binary Distributions → Core.
+- Click zip.
+- Do not click sha512 or pgp.
+- Do not download the source code.
+
+After downloading:
+- Right-click the ZIP file in Windows.
+- Select Extract All…
+- Extract it to a permanent folder where you have permission.
+
+Example location:
+C:\Tools\apache-tomcat-10.1.xx
+
+The extracted Tomcat folder should contain:
+- bin
+- conf
+- lib
+- webapps
+
+Use the extracted folder, not the ZIP file, in Eclipse.
+
+
+5. REGISTER TOMCAT IN ECLIPSE
+
+Open:
+Window → Preferences → Server → Runtime Environments
+
+If Apache Tomcat v10.1 is already configured, check its settings instead
+of adding a duplicate.
+
+Otherwise:
+- Click Add…
+- Expand Apache.
+- Select Apache Tomcat v10.1.
+- Click Next.
+- Click Browse beside Tomcat installation directory.
+- Select the extracted Tomcat folder containing bin, conf, and lib.
+- Select a suitable Java installation in the JRE dropdown.
+- Click Finish.
+- Click Apply and Close.
+
+Tomcat should now appear in Runtime Environments.
+
+This registers the runtime. It does not yet prove that the server or
+application starts successfully.
+
+
+6. CREATE THE MAVEN PROJECT
+
+Create a Maven project using:
+
+Group ID:
+alvarico.allynn
+
+Artifact ID:
+DSCA1
+
+Version:
+0.0.1-SNAPSHOT
+
+Packaging:
+war
+
+If the project is created with jar packaging, the pom.xml below changes
+it to war.
+
+
+7. REPLACE THE CONTENTS OF pom.xml
+
+Open pom.xml and select its source/XML editor tab.
+
+Paste the following XML into the file:
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>alvarico.allynn</groupId>
+    <artifactId>DSCA1</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>DSCA1</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+
+        <!-- Unit testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Jersey: REST API -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>3.1.11</version>
+        </dependency>
+
+        <!-- Jersey dependency injection -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>3.1.11</version>
+        </dependency>
+
+        <!-- JSON support -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>3.1.11</version>
+        </dependency>
+
+        <!-- XML support -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+            <version>3.1.11</version>
+        </dependency>
+
+        <!-- Hibernate: JPA persistence -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.6.59.Final</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
+
+END OF pom.xml CONTENT
+
+Notes:
+- The database driver has not been added yet.
+- The database choice still needs to be confirmed.
+- We still intend to create web.xml.
+- failOnMissingWebXml=false allows setup to continue before that file
+  is created.
+
+
+8. SAVE AND DOWNLOAD DEPENDENCIES
+
+- Save pom.xml using Ctrl + S.
+- Right-click DSCA1.
+- Select Maven → Update Project…
+- Make sure DSCA1 is selected.
+- Tick Force Update of Snapshots/Releases.
+- Click OK.
+- Wait for downloads and the project build to finish.
+
+Internet access is needed for libraries not already available locally.
+
+
+9. CHECK THE DOWNLOADED LIBRARIES
+
+In Project Explorer or Package Explorer:
+- Expand DSCA1.
+- Expand Maven Dependencies.
+
+Look for:
+- jersey-container-servlet-3.1.11.jar
+- jersey-hk2-3.1.11.jar
+- jersey-media-json-jackson-3.1.11.jar
+- jersey-media-jaxb-3.1.11.jar
+- hibernate-core-6.6.59.Final.jar
+
+Other supporting JAR files will also appear.
+
+Expand one JAR and check that its packages are visible.
+
+
+10. CHECK FOR ERRORS
+
+Open:
+Window → Show View → Problems
+
+Look for errors such as:
+- Missing artifact
+- Could not resolve artifact
+- Could not transfer artifact
+
+If there is an error, record its exact message.
+
+Check the Java library listed under the project.
+If it still shows JavaSE-1.8, the project Java configuration needs
+attention.
+
+No errors at this stage does not guarantee that deployment will work.
+The application must still be configured and tested.
+
+
+FINAL CHECKLIST
+
+[ ] A suitable JDK is selected in Eclipse.
+[ ] Server preferences are available.
+[ ] Tomcat 10.1 is registered.
+[ ] The Maven project is named DSCA1.
+[ ] Packaging is war.
+[ ] Maven source and target are set to 17.
+[ ] Jersey and Hibernate JARs appear under Maven Dependencies.
+[ ] No unresolved dependency errors appear.
+
+
+NEXT STAGE
+
+After this setup:
+1. Create web.xml.
+2. Create a simple REST endpoint.
+3. Deploy and test it on Tomcat.
+4. Add database configuration and the JDBC driver.
+5. Create the assignment entities and CRUD endpoints.
+
+
+COLLEGE LAB REMINDER

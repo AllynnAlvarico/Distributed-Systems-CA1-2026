@@ -1,0 +1,14 @@
+Window → Show View → Other… → Server → Servers
+
+1. Select New → Server.
+2. Expand Apache.
+3. Select Tomcat v10.1 Server.
+4. Keep the hostname as localhost.
+5. Select your existing Apache Tomcat v10.1 runtime.
+6. Click Finish.
+
+Start
+
+Tomcat v10.1 Server at localhost [Started, Synchronized]
+
+http://localhost:8080/
